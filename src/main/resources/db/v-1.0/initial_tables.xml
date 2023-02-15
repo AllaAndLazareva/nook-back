@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet id="create_nook_and_address_tables" author="liquibase">
+        <createTable tableName="nook_type">
+            <column name="value" type="varchar(64)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="item">
+            <column name="value" type="varchar(64)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+        <createTable tableName="document_type">
+            <column name="value" type="varchar(64)"/>
+        </createTable>
+        <insert tableName="nook_type">
+            <column name="value" value="FLAT"/>
+        </insert>
+        <insert tableName="document_type">
+            <column name="value" value="IMAGE"/>
+        </insert>
+        <createTable tableName="nook">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="address_id" type="varchar(255)"/>
+            <column name="type" type="varchar(64)">
+                <constraints foreignKeyName="nook_type_type_fk"
+                             referencedTableName="nook_type"
+                             referencedColumnNames="value"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="address">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true"
+                             foreignKeyName="nook_address_fk"
+                             referencedTableName="nook"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="value" type="varchar(255)"/>
+        </createTable>
+        <createTable tableName="document">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="type" type="varchar(255)"/>
+            <column name="data" type="bool"/>
+            <column name="nook_id" type="varchar(255)">
+                <constraints foreignKeyName="document_nook_fk"
+                             referencedTableName="nook"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <sql>
+            CREATE TABLE operation_type
+            (
+                value varchar(64) not null primary key
+            );
+            CREATE TABLE operation
+            (
+                id          VARCHAR(255) NOT NULL,
+                description VARCHAR(255),
+                type        VARCHAR(255),
+                CONSTRAINT pk_operation PRIMARY KEY (id)
+            );
+            ALTER TABLE operation
+                ADD CONSTRAINT FK_OPERATION_ON_ID FOREIGN KEY (id) REFERENCES nook (id);
+            ALTER TABLE operation add constraint FK_OPERATION_TYPE FOREIGN KEY (type) REFERENCES operation_type (value);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
