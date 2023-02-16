@@ -1,6 +1,9 @@
 package by.soykin.nook.nookback;
 
 import by.soykin.nook.nookback.jpa.entities.*;
+import by.soykin.nook.nookback.jpa.repository.AddressRepository;
+import by.soykin.nook.nookback.jpa.repository.ItemRepository;
+import by.soykin.nook.nookback.jpa.repository.NookRepository;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;

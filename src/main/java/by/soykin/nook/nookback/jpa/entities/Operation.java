@@ -1,8 +1,11 @@
 package by.soykin.nook.nookback.jpa.entities;
 
+import by.soykin.nook.nookback.jpa.entities.enums.OperationType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table
@@ -22,6 +25,14 @@ public class Operation {
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private OperationType type;
+
+    @JoinColumn(name="id")
+    @OneToOne
+    private Owner owner;
+
+    @OneToMany
+    @JoinColumn(name = "id")
+    private List<Cost> costs;
 
 
 }

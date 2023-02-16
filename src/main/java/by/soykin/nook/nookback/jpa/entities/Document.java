@@ -1,5 +1,6 @@
 package by.soykin.nook.nookback.jpa.entities;
 
+import by.soykin.nook.nookback.jpa.entities.enums.DocumentType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

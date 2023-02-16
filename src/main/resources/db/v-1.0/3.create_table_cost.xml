@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet id="create_table_cost" author="Lazareva">
+        <createTable tableName="cost">
+            <column name="id" type="varchar(64)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="currency" type="VARCHAR(64)">
+                <constraints foreignKeyName="cost_currency_currency_currency"
+                             references="currency(currency)"/>
+            </column>
+            <column name="cost" type="numeric"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

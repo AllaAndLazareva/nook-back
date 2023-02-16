@@ -56,6 +56,17 @@
 			<artifactId>selenium-firefox-driver</artifactId>
 			<version>LATEST</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains</groupId>
+			<artifactId>annotations</artifactId>
+			<version>17.0.0</version>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
