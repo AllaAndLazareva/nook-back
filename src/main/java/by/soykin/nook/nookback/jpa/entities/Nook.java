@@ -1,6 +1,7 @@
 package by.soykin.nook.nookback.jpa.entities;
 
 import by.soykin.nook.nookback.jpa.entities.enums.NookType;
+import by.soykin.nook.nookback.jpa.entities.enums.Room;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,10 +17,9 @@ public class Nook {
 
     private String description;
 
-    private int square;
-
     @Column(name = "quantity_rooms")
-    private int quantityRooms;
+    @Enumerated(EnumType.STRING)
+    private Room quantityRooms;
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)

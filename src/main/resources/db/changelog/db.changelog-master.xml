@@ -6,11 +6,13 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <include file="db/v-1.0/initial_tables.xml"/>
-    <include file="db/v-1.0/1.create_table_owner.xml"/>
-    <include file="db/v-1.0/2.create_table_currency.xml"/>
-    <include file="db/v-1.0/3.create_table_cost.xml"/>
-    <include file="db/v-1.0/4.create_table_operation_costs.xml"/>
-    <include file="db/v-1.0/5.update_nook.xml"/>
-    <include file="db/v-1.0/6.update_operation.xml"/>
+    <include file="db/v-1.0/1.create_table_owner_type.xml"/>
+    <include file="db/v-1.0/2.create_table_owner.xml"/>
+    <include file="db/v-1.0/3.create_table_currency.xml"/>
+    <include file="db/v-1.0/4.create_table_cost.xml"/>
+    <include file="db/v-1.0/5.create_table_operation_costs.xml"/>
+    <include file="db/v-1.0/6.create_table_room.xml"/>
+    <include file="db/v-1.0/7.update_nook.xml"/>
+    <include file="db/v-1.0/8.update_operation.xml"/>
 
 </databaseChangeLog>

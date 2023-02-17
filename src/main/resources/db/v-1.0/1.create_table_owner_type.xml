@@ -6,13 +6,18 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
 
-    <changeSet id="create_table_owner" author="Lazareva">
-        <createTable tableName="owner">
-            <column name="id" type="varchar(64)">
+    <changeSet id="create_table_owner_type" author="Lazareva">
+        <createTable tableName="owner_type">
+            <column name="type" type="VARCHAR(64)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="name" type="varchar(64)"/>
-            <column name="phone" type="varchar(15)"/>
-        </createTable>
+            </createTable>
+        <insert tableName="owner_type">
+            <column name="type" value="OWNER"/>
+        </insert>
+        <insert tableName="owner_type">
+            <column name="type" value="REALTOR"/>
+        </insert>
+
     </changeSet>
 </databaseChangeLog>

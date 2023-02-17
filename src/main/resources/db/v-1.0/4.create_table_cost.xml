@@ -9,10 +9,10 @@
     <changeSet id="create_table_cost" author="Lazareva">
         <createTable tableName="cost">
             <column name="id" type="varchar(64)">
-                <constraints nullable="false" primaryKey="true"/>
+                <constraints primaryKey="true"/>
             </column>
             <column name="currency" type="VARCHAR(64)">
-                <constraints foreignKeyName="cost_currency_currency_currency"
+                <constraints nullable="false" foreignKeyName="cost_currency_currency_currency"
                              references="currency(currency)"/>
             </column>
             <column name="cost" type="numeric"/>

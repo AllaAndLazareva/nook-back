@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 public class Cost {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @Enumerated(EnumType.STRING)
