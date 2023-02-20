@@ -2,6 +2,7 @@ package by.soykin.nook.nookback;
 
 import by.soykin.nook.nookback.jpa.entities.*;
 import by.soykin.nook.nookback.jpa.entities.enums.Currency;
+import by.soykin.nook.nookback.jpa.entities.enums.OperationType;
 import by.soykin.nook.nookback.jpa.entities.enums.OwnerType;
 import by.soykin.nook.nookback.jpa.entities.enums.Room;
 import by.soykin.nook.nookback.jpa.repository.*;
@@ -56,12 +57,15 @@ class NookBackApplicationTests {
             WebElement panelWithCost = driver.findElement(By.className("apartment-bar"));
             List<WebElement> span = panelWithCost.findElements(By.tagName("span"));
 
+            Cost costBYN=new Cost();
             String costInBy = span.get(0).getText();
-            costRepository.save(stringToCostByn(costInBy));
+            stringToCostByn(costBYN, costInBy);
+            costRepository.save(costBYN);
 
+            Cost costUSD=new Cost();
             String costInUsd = span.get(2).getText();
-            costRepository.save(stringToCostUsd(costInUsd));
-
+            stringToCostUsd(costUSD, costInUsd);
+            costRepository.save(costUSD);
 
             String quantityRooms = span.get(4).getText();
             System.out.println(quantityRooms);
@@ -88,46 +92,58 @@ class NookBackApplicationTests {
             List<String> existItems = description.findElements(By.className("apartment-options__item")).stream().map(WebElement::getText).toList();
             String descriptionText = description.findElement(By.className("apartment-info__sub-line_extended-bottom")).getText();
             String fullAddress = description.findElement(By.className("apartment-info__sub-line_large")).getText();
+
             Operation operation = new Operation();
             operation.setId(UUID.randomUUID().toString());
             operation.setDescription(descriptionText);
             operation.setNook(nook);
             operation.setOwner(owner);
+            List<Cost> costs=new ArrayList<>();
+            costs.add(costBYN);
+            costs.add(costUSD);
+            operation.setCosts(costs);
+            operation.setType(OperationType.RENT);
             operationRepository.save(operation);
 
+            System.out.println(fullAddress);
             Address address = new Address();
             address.setId(fullAddress);
+
             existItems.forEach(s -> {
                 Item item = new Item();
                 item.setValue(s);
                 itemRepository.save(item);
             });
+
+
+
+
+
         });
         driver.quit();
 
     }
 
-    private static Cost stringToCostByn(String costInByn) {
-        Cost costBY = new Cost();
-        costBY.setId(UUID.randomUUID().toString());
-        costBY.setCurrency(Currency.BYN);
+    private static void stringToCostByn(Cost costBYN, String costInByn) {
+
+        costBYN.setId(UUID.randomUUID().toString());
+        costBYN.setCurrency(Currency.BYN);
         String[] words = costInByn.split("\\s");
         String number = words[0];
         BigDecimal Byn = new BigDecimal(number.replace(",", "."));
-        costBY.setCost(Byn);
+        costBYN.setCost(Byn);
 
-        return costBY;
+
     }
 
-    private static Cost stringToCostUsd(String costInUsd) {
-        Cost costUsd = new Cost();
-        costUsd.setCurrency(Currency.USD);
+    private static void stringToCostUsd(Cost costUSD, String costInUsd) {
+        costUSD.setCurrency(Currency.USD);
         String[] words = costInUsd.split("\\s");
         String number = words[0];
         BigDecimal Usd = new BigDecimal(number);
-        costUsd.setCost(Usd);
-        costUsd.setId(UUID.randomUUID().toString());
-        return costUsd;
+        costUSD.setCost(Usd);
+        costUSD.setId(UUID.randomUUID().toString());
+
     }
 
     private static void setQuantityRooms(Nook nook, String quantityRooms) {

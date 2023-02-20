@@ -67,6 +67,9 @@
             (
                 value varchar(64) not null primary key
             );
+
+
+
             CREATE TABLE operation
             (
                 id          VARCHAR(255) NOT NULL,
