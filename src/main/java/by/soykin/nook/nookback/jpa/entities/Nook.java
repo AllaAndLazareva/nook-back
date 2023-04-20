@@ -5,6 +5,7 @@ import by.soykin.nook.nookback.jpa.entities.enums.Room;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name = "nook")
@@ -25,9 +26,11 @@ public class Nook {
     @Enumerated(EnumType.STRING)
     private NookType type;
 
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    private Address address;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinTable(name = "address_nook",
+            joinColumns = @JoinColumn(name = "nook"),
+            inverseJoinColumns = @JoinColumn(name = "address"))
+        private Address address;
 
 
 

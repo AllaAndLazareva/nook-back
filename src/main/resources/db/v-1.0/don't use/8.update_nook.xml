@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet id="update_table_nook" author="Lazareva">
+                <addColumn tableName="nook">
+                    <column name="quantity_rooms" type="VARCHAR(64)">
+                        <constraints nullable="false" foreignKeyName="nook_quantity_rooms_room_room"
+                                     references="room(room)"/>
+                    </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

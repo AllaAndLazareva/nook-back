@@ -6,12 +6,12 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Table
-@Getter
-@Setter
+//@Entity
+//@Table
+//@Getter
+//@Setter
 public class Item {
 
-    @Id
-    private String value;
+//    @Id
+//    private String value;
 }

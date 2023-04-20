@@ -5,15 +5,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <include file="db/v-1.0/initial_tables.xml"/>
-    <include file="db/v-1.0/1.update_table_operation_type.xml"/>
-    <include file="db/v-1.0/2.create_table_owner_type.xml"/>
-    <include file="db/v-1.0/3.create_table_owner.xml"/>
-    <include file="db/v-1.0/4.create_table_currency.xml"/>
-    <include file="db/v-1.0/5.create_table_cost.xml"/>
-    <include file="db/v-1.0/6.create_table_operation_costs.xml"/>
-    <include file="db/v-1.0/7.create_table_room.xml"/>
-    <include file="db/v-1.0/8.update_nook.xml"/>
-    <include file="db/v-1.0/9.update_operation.xml"/>
+    <include file="db/v-1.0/1.0.create_table_nook_type.xml"/>
+    <include file="db/v-1.0/1.1.create_table_room.xml"/>
+    <include file="db/v-1.0/1.2.create_table_nook.xml"/>
+    <include file="db/v-1.0/1.3.create_table_address.xml"/>
+    <include file="db/v-1.0/1.4.create_table_address_nook.xml"/>
+
+
 
 </databaseChangeLog>

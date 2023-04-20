@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet id="create_table_operation_costs" author="Lazareva">
+        <createTable tableName="operation_costs">
+            <column name="operation_id" type="varchar(255)">
+                <constraints foreignKeyName="operation_costs_operation_id_operation_id"
+                             references="operation(id)"/>
+            </column>
+            <column name="cost_id" type="varchar(64)">
+                <constraints foreignKeyName="operation_costs_cost_id_cost_id"
+                             references="cost(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

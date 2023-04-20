@@ -10,11 +10,15 @@ import java.util.List;
 @Table(name = "address")
 @Getter
 @Setter
+
 public class Address {
     @Id
     @Column(name = "id")
     private String id;
 
-    @OneToMany(mappedBy = "address")
+    @Column(name="value")
+    private String value;
+
+    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
     private List<Nook> nooks;
 }
