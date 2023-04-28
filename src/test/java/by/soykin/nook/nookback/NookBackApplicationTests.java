@@ -2,6 +2,7 @@ package by.soykin.nook.nookback;
 
 import by.soykin.nook.nookback.jpa.entities.*;
 import by.soykin.nook.nookback.jpa.entities.enums.*;
+import by.soykin.nook.nookback.jpa.entities.enums.Currency;
 import by.soykin.nook.nookback.jpa.repository.*;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -27,16 +28,16 @@ class NookBackApplicationTests {
     private AddressRepository addressRepository;
     @Autowired
     private NookRepository nookRepository;
-//    @Autowired
-//    private CostRepository costRepository;
+    @Autowired
+    private CostRepository costRepository;
     @Autowired
     private OwnerRepository ownerRepository;
 
     @Autowired
     private PhoneRepository phoneRepository;
-//
-//    @Autowired
-//    private OperationRepository operationRepository;
+
+    @Autowired
+    private OperationRepository operationRepository;
 
     @Test
     void contextLoads() {
@@ -60,8 +61,7 @@ class NookBackApplicationTests {
             navigate.to(url);
             WebElement panelWithCost = driver.findElement(By.className("apartment-bar"));
             List<WebElement> span = panelWithCost.findElements(By.tagName("span"));
-            WebElement addressElement= driver.findElement(By.cssSelector(".apartment-info__sub-line.apartment-info__sub-line_large"));
-            String addressString=addressElement.getText();
+
 
             WebElement nookDescriptionElement=driver.findElement(By.className("apartment-options"));
             String nookDescription=nookDescriptionElement.getText();
@@ -80,6 +80,10 @@ class NookBackApplicationTests {
             setQuantityRooms(nook, quantityRooms);
             nook.setDescription(nookDescription);
             nook.setType(NookType.FLAT);
+
+
+            WebElement addressElement= driver.findElement(By.cssSelector(".apartment-info__sub-line.apartment-info__sub-line_large"));
+            String addressString=addressElement.getText();
 
             Address address = getAddress(addressString, nook);
           // addressRepository.save(address);
@@ -108,15 +112,34 @@ class NookBackApplicationTests {
             String ownerName=webOwnerName.getText();
             owner.setName(ownerName);
             ownerRepository.save(owner);
-//            Cost costBYN=new Cost();
-//            String costInBy = span.get(0).getText();
-//            stringToCostByn(costBYN, costInBy);
-//            costRepository.save(costBYN);
-//
-//            Cost costUSD=new Cost();
-//            String costInUsd = span.get(2).getText();
-//            stringToCostUsd(costUSD, costInUsd);
-//            costRepository.save(costUSD);
+
+
+            Cost cost=new Cost();
+
+            String costInBy = span.get(0).getText();
+            stringToCostByn(cost, costInBy);
+            String costInUsd = span.get(2).getText();
+            stringToCostUsd(cost, costInUsd);
+            costRepository.save(cost);
+
+            Operation operation=new Operation();
+            operation.setType(OperationType.RENT);
+            try {
+                WebElement descriptionOfOperation=driver.findElement(By.xpath("//div[@class='apartment-info__sub-line apartment-info__sub-line_extended-bottom']"));
+                String stringDescriptionOfOperation=descriptionOfOperation.getText();
+                operation.setDescription(stringDescriptionOfOperation);
+            }
+            catch (org.openqa.selenium.NoSuchElementException e){
+                operation.setDescription(null);
+            }
+
+            operation.setNook(nook);
+            operation.setOwner(owner);
+            operation.setCost(cost);
+
+            operationRepository.save(operation);
+
+
 //
 //            String quantityRooms = span.get(4).getText();
 //            System.out.println(quantityRooms);
@@ -176,7 +199,13 @@ class NookBackApplicationTests {
     @NotNull
     private Address getAddress(String addressString, Nook nook) {
         Address address;
-        if(!addressString.equals(addressRepository.findByValue(addressString))) {
+        Optional<Address> addressInDataBase=addressRepository.findByValue(addressString);
+      String addressStringInDataBase=null;
+        if(addressInDataBase.isPresent()){
+          Address address1=addressInDataBase.get();
+          addressStringInDataBase=address1.getValue();
+      }
+        if(!addressString.equals(addressStringInDataBase)) {
             address = new Address();
             address.setId(UUID.randomUUID().toString());
             address.setValue(addressString);
@@ -192,28 +221,21 @@ class NookBackApplicationTests {
         return address;
     }
 
-    //    private static void stringToCostByn(Cost costBYN, String costInByn) {
-//
-//        costBYN.setId(UUID.randomUUID().toString());
-//        costBYN.setCurrency(Currency.BYN);
-//        String[] words = costInByn.split("\\s");
-//        String number = words[0];
-//        BigDecimal Byn = new BigDecimal(number.replace(",", "."));
-//        costBYN.setCost(Byn);
-//
-//
-//    }
-//
-//    private static void stringToCostUsd(Cost costUSD, String costInUsd) {
-//        costUSD.setCurrency(Currency.USD);
-//        String[] words = costInUsd.split("\\s");
-//        String number = words[0];
-//        BigDecimal Usd = new BigDecimal(number);
-//        costUSD.setCost(Usd);
-//        costUSD.setId(UUID.randomUUID().toString());
-//
-//    }
-//
+        private static void stringToCostByn(Cost costBYN, String costInByn) {
+
+        String[] words = costInByn.split("\\s");
+        String number = words[0];
+        BigDecimal Byn = new BigDecimal(number.replace(",", "."));
+        costBYN.setCostInBYN(Byn);
+    }
+
+    private static void stringToCostUsd(Cost costUSD, String costInUsd) {
+        String[] words = costInUsd.split("\\s");
+        String number = words[0];
+        BigDecimal Usd = new BigDecimal(number);
+        costUSD.setCostInUSD(Usd);
+            }
+
     private static void setQuantityRooms(Nook nook, String quantityRooms) {
         switch (quantityRooms) {
             case "1-комнатная квартира":
@@ -225,8 +247,26 @@ class NookBackApplicationTests {
             case "3-комнатная квартира":
                 nook.setQuantityRooms(Room.THREE);
                 break;
-            case "4+-комнатная квартира":
-                nook.setQuantityRooms(Room.FOUR_AND_MORE);
+            case "4-комнатная квартира":
+                nook.setQuantityRooms(Room.FOUR);
+                break;
+            case "5-комнатная квартира":
+                nook.setQuantityRooms(Room.FIVE);
+                break;
+            case "6-комнатная квартира":
+                nook.setQuantityRooms(Room.SIX);
+                break;
+            case "7-комнатная квартира":
+                nook.setQuantityRooms(Room.SEVEN);
+                break;
+            case "8-комнатная квартира":
+                nook.setQuantityRooms(Room.EIGHT);
+                break;
+            case "9-комнатная квартира":
+                nook.setQuantityRooms(Room.NINE);
+                break;
+            case "10-комнатная квартира":
+                nook.setQuantityRooms(Room.TEN);
                 break;
             case "Комната":
                 nook.setQuantityRooms(Room.ROOM);

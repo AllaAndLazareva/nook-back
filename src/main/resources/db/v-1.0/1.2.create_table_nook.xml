@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet id="create_table_nook" author="Lazareva">
+        <createTable tableName="nook">
+            <column name="id" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="description" type="varchar(255)"/>
+            <column name="type" type="varchar(64)">
+                <constraints foreignKeyName="nook_type_type_fk"
+                             referencedTableName="nook_type"
+                             referencedColumnNames="type"/>
+            </column>
+            <column name="quantity_rooms" type="VARCHAR(64)">
+                <constraints nullable="false" foreignKeyName="nook_quantity_rooms_room_room"
+                             references="room(room)"/>
+            </column>
+            </createTable>
+
+
+    </changeSet>
+</databaseChangeLog>

@@ -6,13 +6,16 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
 
-    <changeSet id="create_table_cost" author="Lazareva">
-        <createTable tableName="cost">
-            <column name="id" type="varchar(64)">
+    <changeSet id="create_table_operation_type" author="Lazareva">
+        <createTable tableName="operation_type">
+            <column name="type" type="VARCHAR(64)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="cost_in_byn" type="numeric"/>
-            <column name="cost_in_usd" type="numeric"/>
         </createTable>
+         <insert tableName="operation_type">
+            <column name="type" value="RENT"/>
+        </insert>
+
+
     </changeSet>
 </databaseChangeLog>

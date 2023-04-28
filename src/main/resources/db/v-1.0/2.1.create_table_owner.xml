@@ -6,13 +6,16 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
 
-    <changeSet id="create_table_cost" author="Lazareva">
-        <createTable tableName="cost">
+    <changeSet id="create_table_owner" author="Lazareva">
+        <createTable tableName="owner">
             <column name="id" type="varchar(64)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="cost_in_byn" type="numeric"/>
-            <column name="cost_in_usd" type="numeric"/>
-        </createTable>
+            <column name="owner_type" type="VARCHAR(64)">
+                <constraints foreignKeyName="owner_type_owner_type_type"
+                             references="owner_type(type)"/>
+            </column>
+            <column name="name" type="varchar(64)"/>
+            </createTable>
     </changeSet>
 </databaseChangeLog>

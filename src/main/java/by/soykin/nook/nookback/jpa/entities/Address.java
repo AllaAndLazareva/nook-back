@@ -10,7 +10,6 @@ import java.util.List;
 @Table(name = "address")
 @Getter
 @Setter
-
 public class Address {
     @Id
     @Column(name = "id")
@@ -19,6 +18,11 @@ public class Address {
     @Column(name="value")
     private String value;
 
-    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Nook> nooks;
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

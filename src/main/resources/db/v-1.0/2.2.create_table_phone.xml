@@ -6,13 +6,12 @@
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
 
-    <changeSet id="create_table_cost" author="Lazareva">
-        <createTable tableName="cost">
-            <column name="id" type="varchar(64)">
-                <constraints nullable="false" primaryKey="true"/>
+    <changeSet id="create_table_phone" author="Lazareva">
+        <createTable tableName="phone">
+            <column name="number" type="varchar(20)">
+                <constraints primaryKey="true"/>
             </column>
-            <column name="cost_in_byn" type="numeric"/>
-            <column name="cost_in_usd" type="numeric"/>
+
         </createTable>
     </changeSet>
 </databaseChangeLog>

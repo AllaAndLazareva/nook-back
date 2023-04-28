@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 @Entity
@@ -15,12 +16,18 @@ import java.math.BigDecimal;
 public class Cost {
 
     @Id
+    @Column(name = "id")
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String id;
 
-    @Enumerated(EnumType.STRING)
-    private Currency currency;
+//    @Enumerated(EnumType.STRING)
+//    private Currency currency;
 
+    @Column(name = "cost_in_byn")
+    private BigDecimal costInBYN;
 
-    private BigDecimal cost;
+    @Column(name = "cost_in_usd")
+    private BigDecimal costInUSD;
 
 }
