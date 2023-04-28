@@ -4,34 +4,40 @@ import by.soykin.nook.nookback.jpa.entities.enums.OperationType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
+import java.util.UUID;
 
-//@Entity
-//@Table
-//@Getter
-//@Setter
+@Entity
+@Table(name = "operation")
+@Getter
+@Setter
 public class Operation {
-//
-//    @Id
-//    private String id;
 
-//    @JoinColumn(name = "id")
-//    @OneToOne
-//    private Nook nook;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    private String id;
 
-//    private String description;
-//
-//    @Column(name = "type")
-//    @Enumerated(EnumType.STRING)
-//    private OperationType type;
-//
-//    @JoinColumn(name="id")
-//    @OneToOne
-//    private Owner owner;
-//
-//
-//    @JoinColumn(name =     @OneToMany"id")
+    @Column
+    private String description;
+
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private OperationType type;
+
+    @OneToOne
+    @JoinColumn(name = "nook", referencedColumnName = "id")
+    private Nook nook;
+
+    @OneToOne
+    @JoinColumn(name="owner", referencedColumnName = "id")
+    private Owner owner;
+
+//    @OneToMany
+//    @JoinColumn(name =     "id")
 //    private List<Cost> costs;
 
 

@@ -34,9 +34,9 @@ class NookBackApplicationTests {
 
     @Autowired
     private PhoneRepository phoneRepository;
-//
-//    @Autowired
-//    private OperationRepository operationRepository;
+
+    @Autowired
+    private OperationRepository operationRepository;
 
     @Test
     void contextLoads() {
@@ -60,8 +60,7 @@ class NookBackApplicationTests {
             navigate.to(url);
             WebElement panelWithCost = driver.findElement(By.className("apartment-bar"));
             List<WebElement> span = panelWithCost.findElements(By.tagName("span"));
-            WebElement addressElement= driver.findElement(By.cssSelector(".apartment-info__sub-line.apartment-info__sub-line_large"));
-            String addressString=addressElement.getText();
+
 
             WebElement nookDescriptionElement=driver.findElement(By.className("apartment-options"));
             String nookDescription=nookDescriptionElement.getText();
@@ -80,6 +79,10 @@ class NookBackApplicationTests {
             setQuantityRooms(nook, quantityRooms);
             nook.setDescription(nookDescription);
             nook.setType(NookType.FLAT);
+
+
+            WebElement addressElement= driver.findElement(By.cssSelector(".apartment-info__sub-line.apartment-info__sub-line_large"));
+            String addressString=addressElement.getText();
 
             Address address = getAddress(addressString, nook);
           // addressRepository.save(address);
@@ -108,6 +111,24 @@ class NookBackApplicationTests {
             String ownerName=webOwnerName.getText();
             owner.setName(ownerName);
             ownerRepository.save(owner);
+
+
+            Operation operation=new Operation();
+            operation.setType(OperationType.RENT);
+            WebElement descriptionOfOperation=driver.findElement(By.xpath("//div[@class='apartment-info__sub-line apartment-info__sub-line_extended-bottom']"));
+            String stringDescriptionOfOperation=descriptionOfOperation.getText();
+            operation.setDescription(stringDescriptionOfOperation);
+            operation.setNook(nook);
+            operation.setOwner(owner);
+
+            operationRepository.save(operation);
+
+
+
+
+
+
+
 //            Cost costBYN=new Cost();
 //            String costInBy = span.get(0).getText();
 //            stringToCostByn(costBYN, costInBy);
@@ -176,7 +197,9 @@ class NookBackApplicationTests {
     @NotNull
     private Address getAddress(String addressString, Nook nook) {
         Address address;
-        if(!addressString.equals(addressRepository.findByValue(addressString))) {
+        Optional<Address> addressInDataBase=addressRepository.findByValue(addressString);
+        String addressStringInDataBase=addressInDataBase.toString();
+        if(!addressString.equals(addressStringInDataBase)) {
             address = new Address();
             address.setId(UUID.randomUUID().toString());
             address.setValue(addressString);
@@ -225,8 +248,26 @@ class NookBackApplicationTests {
             case "3-комнатная квартира":
                 nook.setQuantityRooms(Room.THREE);
                 break;
-            case "4+-комнатная квартира":
-                nook.setQuantityRooms(Room.FOUR_AND_MORE);
+            case "4-комнатная квартира":
+                nook.setQuantityRooms(Room.FOUR);
+                break;
+            case "5-комнатная квартира":
+                nook.setQuantityRooms(Room.FIVE);
+                break;
+            case "6-комнатная квартира":
+                nook.setQuantityRooms(Room.SIX);
+                break;
+            case "7-комнатная квартира":
+                nook.setQuantityRooms(Room.SEVEN);
+                break;
+            case "8-комнатная квартира":
+                nook.setQuantityRooms(Room.EIGHT);
+                break;
+            case "9-комнатная квартира":
+                nook.setQuantityRooms(Room.NINE);
+                break;
+            case "10-комнатная квартира":
+                nook.setQuantityRooms(Room.TEN);
                 break;
             case "Комната":
                 nook.setQuantityRooms(Room.ROOM);

@@ -16,6 +16,9 @@
     <include file="db/v-1.0/2.3.create_table_owner_phone.xml"/>
     <include file="db/v-1.0/3.0.create_table_currency.xml"/>
     <include file="db/v-1.0/3.1.create_table_cost.xml"/>
+    <include file="db/v-1.0/4.0.create_table_operation_type.xml"/>
+    <include file="db/v-1.0/4.1.create_table_operation.xml"/>
+
 
 
 

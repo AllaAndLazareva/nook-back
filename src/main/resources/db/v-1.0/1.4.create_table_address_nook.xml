@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet id="create_table_address_nook" author="Lazareva">
+        <createTable tableName="address_nook">
+            <column name="address" type="varchar(255)">
+                <constraints foreignKeyName="address_nook_address_id_nook_id"
+                             references="address(id)"/>
+            </column>
+            <column name="nook" type="varchar(255)">
+                <constraints foreignKeyName="nook_address_nook_id_address_id"
+                             references="nook(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
