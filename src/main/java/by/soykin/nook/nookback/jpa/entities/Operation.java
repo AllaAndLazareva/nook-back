@@ -12,14 +12,14 @@ import java.util.List;
 //@Getter
 //@Setter
 public class Operation {
-
+//
 //    @Id
 //    private String id;
-//
+
 //    @JoinColumn(name = "id")
 //    @OneToOne
 //    private Nook nook;
-//
+
 //    private String description;
 //
 //    @Column(name = "type")
@@ -29,10 +29,10 @@ public class Operation {
 //    @JoinColumn(name="id")
 //    @OneToOne
 //    private Owner owner;
-
-
-    //@JoinColumn(name =     @OneToMany"id")
-   // private List<Cost> costs;
+//
+//
+//    @JoinColumn(name =     @OneToMany"id")
+//    private List<Cost> costs;
 
 
 }

@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @SpringBootTest
 class NookBackApplicationTests {
@@ -32,8 +29,11 @@ class NookBackApplicationTests {
     private NookRepository nookRepository;
 //    @Autowired
 //    private CostRepository costRepository;
-//    @Autowired
-//    private OwnerRepository ownerRepository;
+    @Autowired
+    private OwnerRepository ownerRepository;
+
+    @Autowired
+    private PhoneRepository phoneRepository;
 //
 //    @Autowired
 //    private OperationRepository operationRepository;
@@ -67,6 +67,14 @@ class NookBackApplicationTests {
             String nookDescription=nookDescriptionElement.getText();
 
             String quantityRooms = span.get(4).getText();
+            String ownerType = span.get(5).getText();
+
+
+
+
+
+
+
             Nook nook = new Nook();
             nook.setId(UUID.randomUUID().toString());
             setQuantityRooms(nook, quantityRooms);
@@ -74,11 +82,32 @@ class NookBackApplicationTests {
             nook.setType(NookType.FLAT);
 
             Address address = getAddress(addressString, nook);
-            addressRepository.save(address);
+          // addressRepository.save(address);
             nook.setAddress(address);
+            addressRepository.save(address);
+           // nookRepository.save(nook);
 
-            nookRepository.save(nook);
+            Owner owner = new Owner();
+            owner.setId(UUID.randomUUID().toString());
+            setOwnerType(owner, ownerType);
+            List<Phone> phones=new ArrayList<>();
 
+
+            WebElement infoPhone=driver.findElement(By.id("apartment-phones"));
+            List<WebElement> liInfo=infoPhone.findElements(By.tagName("a"));
+            for (WebElement el: liInfo) {
+                String phone=el.getText();
+                Phone phone1=new Phone();
+                phone1.setNumber(phone);
+                phoneRepository.save(phone1);
+                phones.add(phone1);
+            }
+           owner.setPhoneNumber(phones);
+
+            WebElement webOwnerName= driver.findElement(By.xpath("//div[@class='apartment-info__sub-line apartment-info__sub-line_extended']"));
+            String ownerName=webOwnerName.getText();
+            owner.setName(ownerName);
+            ownerRepository.save(owner);
 //            Cost costBYN=new Cost();
 //            String costInBy = span.get(0).getText();
 //            stringToCostByn(costBYN, costInBy);
@@ -209,15 +238,15 @@ class NookBackApplicationTests {
     public static void setNooksToAddress(Address address, Nook nook){
 
     }
-//
-//    private static void setOwnerType(Owner owner, String ownerType){
-//        switch (ownerType){
-//            case "Собственник": owner.setOwnerType(OwnerType.OWNER);
-//            break;
-//            case "Агентство": owner.setOwnerType(OwnerType.REALTOR);
-//            break;
-//        }
-//    }
+
+    private static void setOwnerType(Owner owner, String ownerType){
+        switch (ownerType){
+            case "Собственник": owner.setOwnerType(OwnerType.OWNER);
+            break;
+            case "Агентство": owner.setOwnerType(OwnerType.REALTOR);
+            break;
+        }
+    }
 
 
 }

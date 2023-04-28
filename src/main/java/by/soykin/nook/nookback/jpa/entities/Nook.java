@@ -26,11 +26,11 @@ public class Nook {
     @Enumerated(EnumType.STRING)
     private NookType type;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinTable(name = "address_nook",
             joinColumns = @JoinColumn(name = "nook"),
             inverseJoinColumns = @JoinColumn(name = "address"))
-        private Address address;
+    private Address address;
 
 
 
