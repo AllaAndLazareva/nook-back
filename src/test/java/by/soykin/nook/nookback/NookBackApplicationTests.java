@@ -137,61 +137,8 @@ class NookBackApplicationTests {
             operation.setOwner(owner);
             operation.setCost(cost);
 
-            operationRepository.save(operation);
+            operationRepository.save(operation);        });
 
-
-//
-//            String quantityRooms = span.get(4).getText();
-//            System.out.println(quantityRooms);
-//            Nook nook = new Nook();
-//            nook.setId(UUID.randomUUID().toString());
-//            setQuantityRooms(nook, quantityRooms);
-//           // nookRepository.save(nook);
-//
-//
-//            Owner owner = new Owner();
-//            String ownerType = span.get(5).getText();
-//            System.out.println(ownerType);
-//            owner.setId(UUID.randomUUID().toString());
-//            setOwnerType(owner, ownerType);
-//            //ownerRepository.save(owner);
-//
-//
-//
-//            System.out.println(costInBy);
-//            System.out.println(costInUsd);
-//            System.out.println(quantityRooms);
-//            System.out.println(owner);
-//            WebElement description = driver.findElement(By.className("apartment-info"));
-//            List<String> existItems = description.findElements(By.className("apartment-options__item")).stream().map(WebElement::getText).toList();
-//            String descriptionText = description.findElement(By.className("apartment-info__sub-line_extended-bottom")).getText();
-//            String fullAddress = description.findElement(By.className("apartment-info__sub-line_large")).getText();
-//
-//
-//            Operation operation = new Operation();
-//            operation.setId(UUID.randomUUID().toString());
-//            operation.setDescription(descriptionText);
-//          //  operation.setNook(nook);
-//          //  operation.setOwner(owner);
-//            List<Cost> costs=new ArrayList<>();
-//            costs.add(costBYN);
-//            costs.add(costUSD);
-//           // operation.setCosts(costs);
-//            operation.setType(OperationType.RENT);
-//            operationRepository.save(operation);
-//
-//            System.out.println(fullAddress);
-//            Address address = new Address();
-//            address.setId(fullAddress);
-//
-//            existItems.forEach(s -> {
-//                Item item = new Item();
-//                item.setValue(s);
-//                itemRepository.save(item);
-//            });
-
-
-        });
         driver.quit();
 
     }
