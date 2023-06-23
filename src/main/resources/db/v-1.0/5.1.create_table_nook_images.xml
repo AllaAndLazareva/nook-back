@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+
+    <changeSet id="create_table_nook_images" author="Lazareva">
+        <createTable tableName="nook_images">
+            <column name="nook" type="varchar(255)">
+                <constraints foreignKeyName="nook_images_nook_id_image_id"
+                             references="nook(id)"/>
+            </column>
+            <column name="images" type="varchar(64)">
+                <constraints foreignKeyName="image_nook_image_id_nook_id"
+                             references="image(location)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

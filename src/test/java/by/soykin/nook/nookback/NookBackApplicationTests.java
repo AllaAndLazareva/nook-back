@@ -2,32 +2,42 @@ package by.soykin.nook.nookback;
 
 import by.soykin.nook.nookback.jpa.entities.*;
 import by.soykin.nook.nookback.jpa.entities.enums.*;
-import by.soykin.nook.nookback.jpa.entities.enums.Currency;
 import by.soykin.nook.nookback.jpa.repository.*;
+
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.SocketException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SpringBootTest
 class NookBackApplicationTests {
 
-private Set<String> setUrls=new HashSet<>();
-private List<String> listUrls=new ArrayList<>();
+    private Set<String> setUrls = new HashSet<>();
+    private List<String> listUrls = new ArrayList<>();
 
-//    @Autowired
-//    private ItemRepository itemRepository;
+
+
     @Autowired
     private AddressRepository addressRepository;
     @Autowired
@@ -43,9 +53,14 @@ private List<String> listUrls=new ArrayList<>();
     @Autowired
     private OperationRepository operationRepository;
 
+
+    @Autowired
+    ImageRepository imageRepository;
+
     @Test
     void contextLoads() {
-        System.setProperty("webdriver.chrome.driver", "chromedriver.exe");
+
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\USER\\Desktop\\chromedriver\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         WebDriver driver = new ChromeDriver(options);
@@ -58,25 +73,25 @@ private List<String> listUrls=new ArrayList<>();
         WebElement paginationPanel = driver.findElement(By.className("pagination"));
         List<WebElement> pagination__secondary = paginationPanel.findElements(By.className("pagination__secondary"));
         WebElement element = driver.findElement(By.className("classifieds-list"));
-        List<WebElement> quantityOfPages=driver.findElements(By.className("pagination-pages__item"));
+        List<WebElement> quantityOfPages = driver.findElements(By.className("pagination-pages__item"));
         List<WebElement> classified = element.findElements(By.className("classified"));
         //Цикл переключения страниц
-        for (int i = 1; i <quantityOfPages.size()+1; i++) {
-          List<String> urls = new ArrayList<>();
-                //List<WebElement> classified = element.findElements(By.className("classified"));
-                //Цикл переключения квартиры на странице
+        for (int i = 0; i < quantityOfPages.size(); i++) {
+            List<String> urls = new ArrayList<>();
+
+            //Цикл переключения квартиры на странице
             for (int j = 0; j < classified.size(); j++) {
                 WebElement element2 = driver.findElement(By.className("classifieds-list"));
-                WebElement link1 = wait.until(ExpectedConditions.elementToBeClickable(By.className("classified")));
+             //   WebElement link1 = wait.until(ExpectedConditions.elementToBeClickable(By.className("classified")));
                 List<WebElement> classified2 = element2.findElements(By.className("classified"));
                 String href;
-                try{
-                   // driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-                    href= classified2.get(j).getAttribute("href");}
-                catch (org.openqa.selenium.StaleElementReferenceException ex){
-                    //List<WebElement> classified3 = element.findElements(By.className("classified"));
+                try {
+
+                    href = classified2.get(j).getAttribute("href");
+                } catch (org.openqa.selenium.StaleElementReferenceException ex) {
+
                     WebElement link = wait.until(ExpectedConditions.elementToBeClickable(By.className("classified")));
-                    href= link.getAttribute("href");
+                    href = link.getAttribute("href");
                 }
 
                 urls.add(href);
@@ -87,195 +102,175 @@ private List<String> listUrls=new ArrayList<>();
                             .elementToBeClickable(By.xpath("//*[@id=\"search-filter-results\"]/div[1]/div/div[3]")));
             buttonNext36.click();
 
-//        for (int i = 0; i < setUrls.size(); i++) {
-//        String url= setUrls.get(i);
-//        driver.navigate().to(url);
-//
-//       WebElement emptyPage=driver.findElement(By.xpath("//*[@id=\"container\"]/div/div/div/div/div/div/h2"));
-//       if (emptyPage.getText().equals("Объявление неактуально")){
-//           driver.navigate().to(setUrls.get(i++));
-//           i=i+1;
-//       }}
         }
         listUrls.addAll(setUrls);
         System.out.println(listUrls.size());
+//Обходим все урлы квартир и скачиваем инфо
+        for (int i = 0; i < listUrls.size(); i++) {
+            String url = listUrls.get(i);
+            WebElement panelWithCost;
+            try {
+                driver.navigate().to(url);
+                panelWithCost = driver.findElement(By.className("apartment-bar"));
 
-            for (int i = 0; i < listUrls.size(); i++) {
-                String url=listUrls.get(i);
-                WebElement panelWithCost;
-          try{      driver.navigate().to(url);
-              panelWithCost = driver.findElement(By.className("apartment-bar"));
+            } catch (org.openqa.selenium.NoSuchElementException e) {
+                driver.navigate().to(listUrls.get(i + 1));
+                i = i + 1;
+                panelWithCost = driver.findElement(By.className("apartment-bar"));
 
-          }
-          catch (org.openqa.selenium.NoSuchElementException e){
-              driver.navigate().to(listUrls.get(i+1));
-              i=i+1;
-               panelWithCost = driver.findElement(By.className("apartment-bar"));
-
-          }
-                List<WebElement> span = panelWithCost.findElements(By.tagName("span"));
-
-
-
-                WebElement nookDescriptionElement = driver.findElement(By.className("apartment-options"));
-                String nookDescription = nookDescriptionElement.getText();
-
-                String quantityRooms = span.get(4).getText();
-                String ownerType = span.get(5).getText();
-
-
-                Nook nook = new Nook();
-                nook.setId(UUID.randomUUID().toString());
-                setQuantityRooms(nook, quantityRooms);
-                nook.setDescription(nookDescription);
-                nook.setType(NookType.FLAT);
+            }
+            //Images!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            List<Image> imageList=new ArrayList<>();
+            WebElement images = driver.findElement(By.className("apartment-cover__thumbnails-inner"));
+            //images of flat
+            List<WebElement> imageElements = images.findElements(By.className("apartment-cover__thumbnail"));
+            URL imageURL = null;
+            for(WebElement myElement : imageElements) {
+                String j = myElement.getAttribute("style");
+                String urlOfImage=null;
+                Pattern pattern=null;
 
 
-                WebElement addressElement = driver.findElement(By.cssSelector(".apartment-info__sub-line.apartment-info__sub-line_large"));
-                String addressString = addressElement.getText();
-
-                Address address = getAddress(addressString, nook);
-                // addressRepository.save(address);
-                nook.setAddress(address);
-                addressRepository.save(address);
-                // nookRepository.save(nook);
-
-                Owner owner = new Owner();
-                owner.setId(UUID.randomUUID().toString());
-                setOwnerType(owner, ownerType);
-                List<Phone> phones = new ArrayList<>();
-
-
-                WebElement infoPhone = driver.findElement(By.id("apartment-phones"));
-                List<WebElement> liInfo = infoPhone.findElements(By.tagName("a"));
-                for (WebElement el : liInfo) {
-                    String phone = el.getText();
-                    Phone phone1 = new Phone();
-                    phone1.setNumber(phone);
-                    phoneRepository.save(phone1);
-                    phones.add(phone1);
+                if(j.contains(".jpg")){
+                    pattern=Pattern.compile("https.+jpg");
                 }
-                owner.setPhoneNumber(phones);
+                else if(j.contains(".jpeg")){
+                    pattern=Pattern.compile("https.+jpeg");
+                }
+                else if(j.contains(".png")){
+                    pattern=Pattern.compile("https.+png");
+                }
+                else if(j.contains(".gif")){
+                    pattern=Pattern.compile("https.+gif");
+                }
+                Matcher matcher = pattern.matcher(j);
 
-                WebElement webOwnerName = driver.findElement(By.xpath("//div[@class='apartment-info__sub-line apartment-info__sub-line_extended']"));
-                String ownerName = webOwnerName.getText();
-                owner.setName(ownerName);
-                ownerRepository.save(owner);
-
-
-                Cost cost = new Cost();
-
-                String costInBy = span.get(0).getText();
-                stringToCostByn(cost, costInBy);
-                String costInUsd = span.get(2).getText();
-                stringToCostUsd(cost, costInUsd);
-                costRepository.save(cost);
-
-                Operation operation = new Operation();
-                operation.setType(OperationType.RENT);
+                while (matcher.find()){
+                    urlOfImage = matcher.group();
+                }
                 try {
-                    WebElement descriptionOfOperation = driver.findElement(By.xpath("//div[@class='apartment-info__sub-line apartment-info__sub-line_extended-bottom']"));
-                    String stringDescriptionOfOperation = descriptionOfOperation.getText();
-                    operation.setDescription(stringDescriptionOfOperation);
-                } catch (org.openqa.selenium.NoSuchElementException e) {
-                    operation.setDescription(null);
+                    imageURL=new URL(urlOfImage);
+                    BufferedImage saveImage = ImageIO.read(imageURL);
+                    String pathNameJPG="C:\\image\\"+new Date().getTime() + ".jpg";
+                    String pathNameJPEG="C:\\image\\"+new Date().getTime() + ".jpeg";
+                    String pathNamePNG="C:\\image\\"+new Date().getTime() + ".png";
+                    String pathNameGIF="C:\\image\\"+new Date().getTime() + ".gif";
+
+                    if(j.contains(".jpg")){
+                        //download image to the workspace where the project is, save picture as picture.png (can be changed)
+                        ImageIO.write(saveImage, "jpg", new File(pathNameJPG));
+                        Image image=new Image();
+                        image.setLocation(pathNameJPEG);
+                        imageList.add(image);
+                        imageRepository.save(image);
+
+                    }
+                    else if(j.contains(".jpeg")){
+                        //download image to the workspace where the project is, save picture as picture.png (can be changed)
+                        ImageIO.write(saveImage, "jpeg", new File(pathNameJPEG));
+                        Image image=new Image();
+                        image.setLocation(pathNameJPEG);
+                        imageList.add(image);
+                        imageRepository.save(image);
+                    }
+                    else if(j.contains(".png")){
+                        //download image to the workspace where the project is, save picture as picture.png (can be changed)
+                        ImageIO.write(saveImage, "png", new File(pathNamePNG));
+                        Image image=new Image();
+                        image.setLocation(pathNamePNG);
+                        imageList.add(image);
+                        imageRepository.save(image);
+                    }
+                    else if(j.contains(".gif")){
+                        //download image to the workspace where the project is, save picture as picture.png (can be changed)
+                        ImageIO.write(saveImage, "gif", new File(pathNameGIF));
+                        Image image=new Image();
+                        image.setLocation(pathNameGIF);
+                        imageList.add(image);
+                        imageRepository.save(image);
+                    }
+
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
+            }
+            //The end of images
+            List<WebElement> span = panelWithCost.findElements(By.tagName("span"));
+            WebElement nookDescriptionElement = driver.findElement(By.className("apartment-options"));
+            String nookDescription = nookDescriptionElement.getText();
+            String quantityRooms = span.get(4).getText();
+            String ownerType = span.get(5).getText();
+            Nook nook = new Nook();
+            nook.setId(UUID.randomUUID().toString());
+            setQuantityRooms(nook, quantityRooms);
+            nook.setDescription(nookDescription);
+            nook.setType(NookType.FLAT);
+            nook.setImages(imageList);
 
-                operation.setNook(nook);
-                operation.setOwner(owner);
-                operation.setCost(cost);
 
-                operationRepository.save(operation);
+            WebElement addressElement = driver.findElement(By.cssSelector(".apartment-info__sub-line.apartment-info__sub-line_large"));
+            String addressString = addressElement.getText();
+
+            Address address = getAddress(addressString, nook);
+
+            nook.setAddress(address);
+            addressRepository.save(address);
+
+
+            Owner owner = new Owner();
+            owner.setId(UUID.randomUUID().toString());
+            setOwnerType(owner, ownerType);
+            List<Phone> phones = new ArrayList<>();
+
+
+
+            WebElement infoPhone = driver.findElement(By.id("apartment-phones"));
+            List<WebElement> liInfo = infoPhone.findElements(By.tagName("a"));
+            for (WebElement el : liInfo) {
+                String phone = el.getText();
+                Phone phone1 = new Phone();
+                phone1.setNumber(phone);
+                phoneRepository.save(phone1);
+                phones.add(phone1);
+            }
+            owner.setPhoneNumber(phones);
+
+            WebElement webOwnerName = driver.findElement(By.xpath("//div[@class='apartment-info__sub-line apartment-info__sub-line_extended']"));
+            String ownerName = webOwnerName.getText();
+            owner.setName(ownerName);
+            ownerRepository.save(owner);
+
+
+
+
+            Cost cost = new Cost();
+
+            String costInBy = span.get(0).getText();
+            stringToCostByn(cost, costInBy);
+            String costInUsd = span.get(2).getText();
+            stringToCostUsd(cost, costInUsd);
+            costRepository.save(cost);
+
+
+
+            Operation operation = new Operation();
+            operation.setType(OperationType.RENT);
+            try {
+                WebElement descriptionOfOperation = driver.findElement(By.xpath("//div[@class='apartment-info__sub-line apartment-info__sub-line_extended-bottom']"));
+                String stringDescriptionOfOperation = descriptionOfOperation.getText();
+                operation.setDescription(stringDescriptionOfOperation);
+            } catch (org.openqa.selenium.NoSuchElementException e) {
+                operation.setDescription(null);
             }
 
+            operation.setNook(nook);
+            operation.setOwner(owner);
+            operation.setCost(cost);
 
-//                WebElement emptyPage=driver.findElement(By.xpath("//*[@id=\"container\"]/div/div/div/div/div/div/h2"));
-//                if (emptyPage.getText().equals("Объявление неактуально")){
-//           driver.navigate().to(listUrls.get(i++));
-//           i=i+1;
-//       }
-           // }
-
-//            setUrls.forEach(url -> {
-//                navigate.to(url);
-//                WebElement panelWithCost = driver.findElement(By.className("apartment-bar"));
-//                List<WebElement> span = panelWithCost.findElements(By.tagName("span"));
-//
-//
-//                WebElement nookDescriptionElement = driver.findElement(By.className("apartment-options"));
-//                String nookDescription = nookDescriptionElement.getText();
-//
-//                String quantityRooms = span.get(4).getText();
-//                String ownerType = span.get(5).getText();
-//
-//
-//                Nook nook = new Nook();
-//                nook.setId(UUID.randomUUID().toString());
-//                setQuantityRooms(nook, quantityRooms);
-//                nook.setDescription(nookDescription);
-//                nook.setType(NookType.FLAT);
-//
-//
-//                WebElement addressElement = driver.findElement(By.cssSelector(".apartment-info__sub-line.apartment-info__sub-line_large"));
-//                String addressString = addressElement.getText();
-//
-//                Address address = getAddress(addressString, nook);
-//                // addressRepository.save(address);
-//                nook.setAddress(address);
-//                addressRepository.save(address);
-//                // nookRepository.save(nook);
-//
-//                Owner owner = new Owner();
-//                owner.setId(UUID.randomUUID().toString());
-//                setOwnerType(owner, ownerType);
-//                List<Phone> phones = new ArrayList<>();
-//
-//
-//                WebElement infoPhone = driver.findElement(By.id("apartment-phones"));
-//                List<WebElement> liInfo = infoPhone.findElements(By.tagName("a"));
-//                for (WebElement el : liInfo) {
-//                    String phone = el.getText();
-//                    Phone phone1 = new Phone();
-//                    phone1.setNumber(phone);
-//                    phoneRepository.save(phone1);
-//                    phones.add(phone1);
-//                }
-//                owner.setPhoneNumber(phones);
-//
-//                WebElement webOwnerName = driver.findElement(By.xpath("//div[@class='apartment-info__sub-line apartment-info__sub-line_extended']"));
-//                String ownerName = webOwnerName.getText();
-//                owner.setName(ownerName);
-//                ownerRepository.save(owner);
-//
-//
-//                Cost cost = new Cost();
-//
-//                String costInBy = span.get(0).getText();
-//                stringToCostByn(cost, costInBy);
-//                String costInUsd = span.get(2).getText();
-//                stringToCostUsd(cost, costInUsd);
-//                costRepository.save(cost);
-//
-//                Operation operation = new Operation();
-//                operation.setType(OperationType.RENT);
-//                try {
-//                    WebElement descriptionOfOperation = driver.findElement(By.xpath("//div[@class='apartment-info__sub-line apartment-info__sub-line_extended-bottom']"));
-//                    String stringDescriptionOfOperation = descriptionOfOperation.getText();
-//                    operation.setDescription(stringDescriptionOfOperation);
-//                } catch (org.openqa.selenium.NoSuchElementException e) {
-//                    operation.setDescription(null);
-//                }
-//
-//                operation.setNook(nook);
-//                operation.setOwner(owner);
-//                operation.setCost(cost);
-//
-//                operationRepository.save(operation);
-//            });}
-//        catch (org.openqa.selenium.NoSuchElementException e){
-//            driver.navigate().forward();
-//        }
-
+            operationRepository.save(operation);
+        }
 
 
         driver.quit();
@@ -285,29 +280,28 @@ private List<String> listUrls=new ArrayList<>();
     @NotNull
     private Address getAddress(String addressString, Nook nook) {
         Address address;
-        Optional<Address> addressInDataBase=addressRepository.findByValue(addressString);
-      String addressStringInDataBase=null;
-        if(addressInDataBase.isPresent()){
-          Address address1=addressInDataBase.get();
-          addressStringInDataBase=address1.getValue();
-      }
-        if(!addressString.equals(addressStringInDataBase)) {
+        Optional<Address> addressInDataBase = addressRepository.findByValue(addressString);
+        String addressStringInDataBase = null;
+        if (addressInDataBase.isPresent()) {
+            Address address1 = addressInDataBase.get();
+            addressStringInDataBase = address1.getValue();
+        }
+        if (!addressString.equals(addressStringInDataBase)) {
             address = new Address();
             address.setId(UUID.randomUUID().toString());
             address.setValue(addressString);
-            List<Nook> addressOfNooks=new ArrayList<>();
+            List<Nook> addressOfNooks = new ArrayList<>();
             addressOfNooks.add(nook);
             address.setNooks(addressOfNooks);
-        }
-        else {
-           address=addressRepository.findByValue(addressString).orElseThrow();
-           address.getNooks().add(nook);
+        } else {
+            address = addressRepository.findByValue(addressString).orElseThrow();
+            address.getNooks().add(nook);
 
         }
         return address;
     }
 
-        private static void stringToCostByn(Cost costBYN, String costInByn) {
+    private static void stringToCostByn(Cost costBYN, String costInByn) {
 
         String[] words = costInByn.split("\\s");
         String number = words[0];
@@ -320,7 +314,7 @@ private List<String> listUrls=new ArrayList<>();
         String number = words[0];
         BigDecimal Usd = new BigDecimal(number);
         costUSD.setCostInUSD(Usd);
-            }
+    }
 
     private static void setQuantityRooms(Nook nook, String quantityRooms) {
         switch (quantityRooms) {
@@ -361,18 +355,20 @@ private List<String> listUrls=new ArrayList<>();
 
     }
 
-    public static void setNooksToAddress(Address address, Nook nook){
 
-    }
 
-    private static void setOwnerType(Owner owner, String ownerType){
-        switch (ownerType){
-            case "Собственник": owner.setOwnerType(OwnerType.OWNER);
-            break;
-            case "Агентство": owner.setOwnerType(OwnerType.REALTOR);
-            break;
+
+
+    private static void setOwnerType(Owner owner, String ownerType) {
+        switch (ownerType) {
+            case "Собственник":
+                owner.setOwnerType(OwnerType.OWNER);
+                break;
+            case "Агентство":
+                owner.setOwnerType(OwnerType.REALTOR);
+                break;
         }
     }
-
-
 }
+
+

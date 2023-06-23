@@ -18,6 +18,8 @@
     <include file="db/v-1.0/3.1.create_table_cost.xml"/>
     <include file="db/v-1.0/4.0.create_table_operation_type.xml"/>
     <include file="db/v-1.0/4.1.create_table_operation.xml"/>
+    <include file="db/v-1.0/5.0.create_table_image.xml"/>
+    <include file="db/v-1.0/5.1.create_table_nook_images.xml"/>
 
 
 

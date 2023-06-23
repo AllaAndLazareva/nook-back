@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 
+import java.util.List;
+
 @Entity
 @Table(name = "nook")
 @Getter
@@ -31,6 +33,13 @@ public class Nook {
             joinColumns = @JoinColumn(name = "nook"),
             inverseJoinColumns = @JoinColumn(name = "address"))
     private Address address;
+
+
+    @OneToMany
+    @JoinTable(name = "nook_images",
+            joinColumns = @JoinColumn(name = "nook"),
+            inverseJoinColumns = @JoinColumn(name = "images"))
+    private List<Image> images;
 
 
 
