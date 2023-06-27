@@ -5,6 +5,7 @@ import by.soykin.nook.nookback.jpa.entities.enums.*;
 import by.soykin.nook.nookback.jpa.repository.*;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -13,10 +14,6 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -26,6 +23,7 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -120,82 +118,7 @@ class NookBackApplicationTests {
 
             }
             //Images!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            List<Image> imageList=new ArrayList<>();
-            WebElement images = driver.findElement(By.className("apartment-cover__thumbnails-inner"));
-            //images of flat
-            List<WebElement> imageElements = images.findElements(By.className("apartment-cover__thumbnail"));
-            URL imageURL = null;
-            for(WebElement myElement : imageElements) {
-                String j = myElement.getAttribute("style");
-                String urlOfImage=null;
-                Pattern pattern=null;
-
-
-                if(j.contains(".jpg")){
-                    pattern=Pattern.compile("https.+jpg");
-                }
-                else if(j.contains(".jpeg")){
-                    pattern=Pattern.compile("https.+jpeg");
-                }
-                else if(j.contains(".png")){
-                    pattern=Pattern.compile("https.+png");
-                }
-                else if(j.contains(".gif")){
-                    pattern=Pattern.compile("https.+gif");
-                }
-                Matcher matcher = pattern.matcher(j);
-
-                while (matcher.find()){
-                    urlOfImage = matcher.group();
-                }
-                try {
-                    imageURL=new URL(urlOfImage);
-                    BufferedImage saveImage = ImageIO.read(imageURL);
-                    String pathNameJPG="C:\\image\\"+new Date().getTime() + ".jpg";
-                    String pathNameJPEG="C:\\image\\"+new Date().getTime() + ".jpeg";
-                    String pathNamePNG="C:\\image\\"+new Date().getTime() + ".png";
-                    String pathNameGIF="C:\\image\\"+new Date().getTime() + ".gif";
-
-                    if(j.contains(".jpg")){
-                        //download image to the workspace where the project is, save picture as picture.png (can be changed)
-                        ImageIO.write(saveImage, "jpg", new File(pathNameJPG));
-                        Image image=new Image();
-                        image.setLocation(pathNameJPEG);
-                        imageList.add(image);
-                        imageRepository.save(image);
-
-                    }
-                    else if(j.contains(".jpeg")){
-                        //download image to the workspace where the project is, save picture as picture.png (can be changed)
-                        ImageIO.write(saveImage, "jpeg", new File(pathNameJPEG));
-                        Image image=new Image();
-                        image.setLocation(pathNameJPEG);
-                        imageList.add(image);
-                        imageRepository.save(image);
-                    }
-                    else if(j.contains(".png")){
-                        //download image to the workspace where the project is, save picture as picture.png (can be changed)
-                        ImageIO.write(saveImage, "png", new File(pathNamePNG));
-                        Image image=new Image();
-                        image.setLocation(pathNamePNG);
-                        imageList.add(image);
-                        imageRepository.save(image);
-                    }
-                    else if(j.contains(".gif")){
-                        //download image to the workspace where the project is, save picture as picture.png (can be changed)
-                        ImageIO.write(saveImage, "gif", new File(pathNameGIF));
-                        Image image=new Image();
-                        image.setLocation(pathNameGIF);
-                        imageList.add(image);
-                        imageRepository.save(image);
-                    }
-
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+            List<Image> imageList = getImages(driver);
             //The end of images
             List<WebElement> span = panelWithCost.findElements(By.tagName("span"));
             WebElement nookDescriptionElement = driver.findElement(By.className("apartment-options"));
@@ -207,6 +130,11 @@ class NookBackApplicationTests {
             setQuantityRooms(nook, quantityRooms);
             nook.setDescription(nookDescription);
             nook.setType(NookType.FLAT);
+
+            LocalDateTime timeOfAccommodation = getTime(driver);
+            nook.setTimeOfAccommodation(timeOfAccommodation);
+
+            setTimeOfEditing(driver, nook);
             nook.setImages(imageList);
 
 
@@ -275,6 +203,137 @@ class NookBackApplicationTests {
 
         driver.quit();
 
+    }
+
+    @NotNull
+    private List<Image> getImages(WebDriver driver) {
+        List<Image> imageList=new ArrayList<>();
+        WebElement images = driver.findElement(By.className("apartment-cover__thumbnails-inner"));
+        //images of flat
+        List<WebElement> imageElements = images.findElements(By.className("apartment-cover__thumbnail"));
+        URL imageURL = null;
+        for(WebElement myElement : imageElements) {
+            String j = myElement.getAttribute("style");
+            String urlOfImage=null;
+            Pattern pattern=null;
+
+
+            if(j.contains(".jpg")){
+                pattern=Pattern.compile("https.+jpg");
+            }
+            else if(j.contains(".jpeg")){
+                pattern=Pattern.compile("https.+jpeg");
+            }
+            else if(j.contains(".png")){
+                pattern=Pattern.compile("https.+png");
+            }
+            else if(j.contains(".gif")){
+                pattern=Pattern.compile("https.+gif");
+            }
+            Matcher matcher = pattern.matcher(j);
+
+            while (matcher.find()){
+                urlOfImage = matcher.group();
+            }
+            try {
+                imageURL=new URL(urlOfImage);
+                BufferedImage saveImage = ImageIO.read(imageURL);
+                String pathNameJPG="C:\\image\\"+new Date().getTime() + ".jpg";
+                String pathNameJPEG="C:\\image\\"+new Date().getTime() + ".jpeg";
+                String pathNamePNG="C:\\image\\"+new Date().getTime() + ".png";
+                String pathNameGIF="C:\\image\\"+new Date().getTime() + ".gif";
+
+                if(j.contains(".jpg")){
+                    //download image to the workspace where the project is, save picture as picture.png (can be changed)
+                    ImageIO.write(saveImage, "jpg", new File(pathNameJPG));
+                    Image image=new Image();
+                    image.setLocation(pathNameJPEG);
+                    imageList.add(image);
+                    imageRepository.save(image);
+
+                }
+                else if(j.contains(".jpeg")){
+                    //download image to the workspace where the project is, save picture as picture.png (can be changed)
+                    ImageIO.write(saveImage, "jpeg", new File(pathNameJPEG));
+                    Image image=new Image();
+                    image.setLocation(pathNameJPEG);
+                    imageList.add(image);
+                    imageRepository.save(image);
+                }
+                else if(j.contains(".png")){
+                    //download image to the workspace where the project is, save picture as picture.png (can be changed)
+                    ImageIO.write(saveImage, "png", new File(pathNamePNG));
+                    Image image=new Image();
+                    image.setLocation(pathNamePNG);
+                    imageList.add(image);
+                    imageRepository.save(image);
+                }
+                else if(j.contains(".gif")){
+                    //download image to the workspace where the project is, save picture as picture.png (can be changed)
+                    ImageIO.write(saveImage, "gif", new File(pathNameGIF));
+                    Image image=new Image();
+                    image.setLocation(pathNameGIF);
+                    imageList.add(image);
+                    imageRepository.save(image);
+                }
+
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return imageList;
+    }
+
+    private void setTimeOfEditing(WebDriver driver, Nook nook) {
+        try {
+            WebElement timeElement= driver.findElement(By.id("apartment-updated-at"));
+            String timeStr=timeElement.getText();
+            String[] wordsOfTime = timeStr.split("\\s");
+            String number = wordsOfTime[0];
+            LocalDateTime timeOfEditing=null;
+            long l=Long.parseLong(number);
+            if(timeStr.contains("минут")){
+                timeOfEditing=LocalDateTime.now().minusMinutes(l);
+            }
+            else if(timeStr.contains("час")){
+                timeOfEditing=LocalDateTime.now().minusHours(l);
+            }
+            else if(timeStr.contains("дня") | timeStr.contains("дней")| timeStr.contains("день")  ){
+                timeOfEditing=LocalDateTime.now().minusDays(l);
+            }
+            else if(timeStr.contains(" месяц")){
+                timeOfEditing=LocalDateTime.now().minusMonths(l);
+            }
+            nook.setTimeOfEditing(timeOfEditing);
+        }
+        catch (org.openqa.selenium.NoSuchElementException e){
+         nook.setTimeOfEditing(null);
+        }
+    }
+
+    @Nullable
+    private LocalDateTime getTime(WebDriver driver) {
+        WebElement timeElement= driver.findElement(By.xpath("//*[@id=\"container\"]/div/div[2]/div/div/div[2]/div[5]/div[3]/div/div[2]/div[1]"));
+        String timeStrOfAccommodation=timeElement.getText();
+        String[] wordsOfTime = timeStrOfAccommodation.split("\\s");
+        String number = wordsOfTime[1];
+        long t=Long.parseLong(number);
+        LocalDateTime timeOfAccommodation=null;
+        if(timeStrOfAccommodation.contains("минут")){
+            timeOfAccommodation=LocalDateTime.now().minusMinutes(t);
+        }
+        else if(timeStrOfAccommodation.contains("час")){
+            timeOfAccommodation=LocalDateTime.now().minusHours(t);
+        }
+        else if(timeStrOfAccommodation.contains("дня") | timeStrOfAccommodation.contains("дней")| timeStrOfAccommodation.contains("день")  ){
+            timeOfAccommodation=LocalDateTime.now().minusDays(t);
+        }
+        else if(timeStrOfAccommodation.contains(" месяц")){
+            timeOfAccommodation=LocalDateTime.now().minusMonths(t);
+        }
+        return timeOfAccommodation;
     }
 
     @NotNull

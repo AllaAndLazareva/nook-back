@@ -17,6 +17,8 @@
                              referencedTableName="nook_type"
                              referencedColumnNames="type"/>
             </column>
+            <column name="time_of_accommodation" type="TIMESTAMP"/>
+            <column name="time_of_editing" type="TIMESTAMP"/>
             <column name="quantity_rooms" type="VARCHAR(64)">
                 <constraints nullable="false" foreignKeyName="nook_quantity_rooms_room_room"
                              references="room(room)"/>

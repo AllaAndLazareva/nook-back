@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -27,6 +28,12 @@ public class Nook {
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private NookType type;
+
+    @Column(name="time_of_accommodation")
+    private LocalDateTime timeOfAccommodation;
+
+    @Column(name="time_of_editing")
+    private LocalDateTime timeOfEditing;
 
     @ManyToOne
     @JoinTable(name = "address_nook",
