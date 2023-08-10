@@ -14,6 +14,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -33,6 +34,8 @@ class NookBackApplicationTests {
 
     private Set<String> setUrls = new HashSet<>();
     private List<String> listUrls = new ArrayList<>();
+
+    private static String FOLDER_PATH="C:\\image\\";
 
 
 
@@ -135,6 +138,9 @@ class NookBackApplicationTests {
             nook.setTimeOfAccommodation(timeOfAccommodation);
 
             setTimeOfEditing(driver, nook);
+            if(nook.getTimeOfEditing()==null){
+                nook.setTimeOfEditing(nook.getTimeOfAccommodation());
+            }
             nook.setImages(imageList);
 
 
@@ -428,6 +434,93 @@ class NookBackApplicationTests {
                 break;
         }
     }
+
+//    @NotNull
+//    private List<Image> uploadImageToFileSystem(WebDriver driver, MultipartFile file) {
+//        String filepath=FOLDER_PATH+file.getOriginalFilename();
+//        List<Image> imageList=new ArrayList<>();
+//        WebElement images = driver.findElement(By.className("apartment-cover__thumbnails-inner"));
+//        //images of flat
+//        List<WebElement> imageElements = images.findElements(By.className("apartment-cover__thumbnail"));
+//        URL imageURL = null;
+//        for(WebElement myElement : imageElements) {
+//            String j = myElement.getAttribute("style");
+//            String urlOfImage=null;
+//            Pattern pattern=null;
+//
+//
+//            if(j.contains(".jpg")){
+//                pattern=Pattern.compile("https.+jpg");
+//            }
+//            else if(j.contains(".jpeg")){
+//                pattern=Pattern.compile("https.+jpeg");
+//            }
+//            else if(j.contains(".png")){
+//                pattern=Pattern.compile("https.+png");
+//            }
+//            else if(j.contains(".gif")){
+//                pattern=Pattern.compile("https.+gif");
+//            }
+//            Matcher matcher = pattern.matcher(j);
+//
+//            while (matcher.find()){
+//                urlOfImage = matcher.group();
+//            }
+//            try {
+//                imageURL=new URL(urlOfImage);
+//
+//                Image image=imageRepository.save(Image.builder()
+//                        .name(file.getOriginalFilename())
+//                        .type(file.getContentType())
+//                        .filepath(filepath).build());
+//                BufferedImage saveImage = ImageIO.read(imageURL);
+//                String pathNameJPG="C:\\image\\"+new Date().getTime() + ".jpg";
+//                String pathNameJPEG="C:\\image\\"+new Date().getTime() + ".jpeg";
+//                String pathNamePNG="C:\\image\\"+new Date().getTime() + ".png";
+//                String pathNameGIF="C:\\image\\"+new Date().getTime() + ".gif";
+//
+//                if(j.contains(".jpg")){
+//                    //download image to the workspace where the project is, save picture as picture.png (can be changed)
+//                    ImageIO.write(saveImage, "jpg", new File(pathNameJPG));
+//                    Image image=new Image();
+//                    image.setLocation(pathNameJPEG);
+//                    imageList.add(image);
+//                    imageRepository.save(image);
+//
+//                }
+//                else if(j.contains(".jpeg")){
+//                    //download image to the workspace where the project is, save picture as picture.png (can be changed)
+//                    ImageIO.write(saveImage, "jpeg", new File(pathNameJPEG));
+//                    Image image=new Image();
+//                    image.setLocation(pathNameJPEG);
+//                    imageList.add(image);
+//                    imageRepository.save(image);
+//                }
+//                else if(j.contains(".png")){
+//                    //download image to the workspace where the project is, save picture as picture.png (can be changed)
+//                    ImageIO.write(saveImage, "png", new File(pathNamePNG));
+//                    Image image=new Image();
+//                    image.setLocation(pathNamePNG);
+//                    imageList.add(image);
+//                    imageRepository.save(image);
+//                }
+//                else if(j.contains(".gif")){
+//                    //download image to the workspace where the project is, save picture as picture.png (can be changed)
+//                    ImageIO.write(saveImage, "gif", new File(pathNameGIF));
+//                    Image image=new Image();
+//                    image.setLocation(pathNameGIF);
+//                    imageList.add(image);
+//                    imageRepository.save(image);
+//                }
+//
+//            } catch (MalformedURLException e) {
+//                throw new RuntimeException(e);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//        return imageList;
+//    }
 }
 
 
