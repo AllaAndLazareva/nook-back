@@ -24,7 +24,7 @@ public class NookProviderImpl implements NookProvider {
     private final Mapper<Nook, NookModel> mapper;
     private final NookRepository nookRepository;
 
-    private final ImageProvider imageProvider;
+
 
 
 //    @Override

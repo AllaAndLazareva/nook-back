@@ -9,4 +9,5 @@ public class ImageModel {
 
     private String location;
     private byte[] images;
+    private String type;
 }

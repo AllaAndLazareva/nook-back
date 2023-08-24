@@ -28,11 +28,12 @@ public class NookController {
 
     private final NookProvider nookProvider;
 
-    private final ImageProvider imageProvider;
 
 
 
-    @RequestMapping(value = "/image//{fileName}", headers = "Accept=image/jpeg, image/jpg, image/png, image/gif", method = RequestMethod.GET)
+
+    @RequestMapping
+    @GetMapping
     public ResponseEntity<List<NookModel>> getAll(
             @RequestParam(value = "offset", defaultValue = "0") Integer offset,
             @RequestParam(value = "limit", defaultValue = "20") Integer limit
@@ -41,30 +42,7 @@ public class NookController {
         return ResponseEntity.ok(nookProvider.getAll(offset,limit));
     }
 
-    @RequestMapping(value = "/image/{fileName}", method = RequestMethod.GET, produces = "image/jpeg")
-    public ResponseEntity<?> downloadImage(@PathVariable String fileName) throws IOException {
-        byte [] image = imageProvider.downloadImage(fileName);
-        ResponseEntity<byte[]> body=null;
-        if(fileName.contains(".png")){
-             body= ResponseEntity.status(HttpStatus.OK)
-                    .contentType(MediaType.valueOf("image/png"))
-                    .body(image);
-        }
-        else if(fileName.contains(".jpg")){
-            body=ResponseEntity.status(HttpStatus.OK)
-                    .contentType(MediaType.valueOf("image/jpg"))
-                    .body(image);}
-        else if(fileName.contains(".jpeg")){
-            body= ResponseEntity.status(HttpStatus.OK)
-                    .contentType(MediaType.valueOf("image/jpeg"))
-                    .body(image);}
-        else if(fileName.contains(".gif")){
-           body= ResponseEntity.status(HttpStatus.OK)
-                    .contentType(MediaType.valueOf("image/gif"))
-                    .body(image);}
-        return body;
 
-            }
 
 
 

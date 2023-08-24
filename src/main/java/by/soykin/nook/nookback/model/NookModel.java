@@ -23,6 +23,6 @@ public class NookModel {
 
     private String address;
 
-    private byte[] image;
+    private ImageModel image;
 
 }

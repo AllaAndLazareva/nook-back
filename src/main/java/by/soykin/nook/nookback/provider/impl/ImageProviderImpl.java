@@ -2,6 +2,8 @@ package by.soykin.nook.nookback.provider.impl;
 
 import by.soykin.nook.nookback.jpa.entities.Image;
 import by.soykin.nook.nookback.jpa.repository.ImageRepository;
+import by.soykin.nook.nookback.mapper.Mapper;
+import by.soykin.nook.nookback.model.ImageModel;
 import by.soykin.nook.nookback.model.NookModel;
 import by.soykin.nook.nookback.provider.ImageProvider;
 import lombok.RequiredArgsConstructor;
@@ -15,45 +17,38 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ImageProviderImpl implements ImageProvider {
-
-    @Autowired
-    private ImageRepository imageRepository;
-
-    //private NookModel nookModel;
-
+public class ImageProviderImpl  {
 //    @Override
-//    public List<NookModel> showImage(List<NookModel> nookModels)  {
-//        for (int i = 0; i < nookModels.size(); i++) {
+//    public List<ImageModel> getAll(String nookId) {
+//        return n
+}
+
 //
-//            String location = nookModels.get(i).getImage().getLocation();
-//            BufferedImage img = new BufferedImage(
-//                    235, 157, BufferedImage.TYPE_INT_RGB);
-//            File f = new File(location);
-//            try {
+//    private ImageRepository imageRepository;
 //
-//                if (location.contains(".png")) {
-//                    ImageIO.write(img, "PNG", f);
-//                } else if (location.contains(".jpg")) {
-//                     ImageIO.write(img, "JPG", f);
-//                } else if (location.contains(".jpeg")) {
-//                    ImageIO.write(img, "JPEG", f);
-//                }
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//        return nookModels;
+//    private final Mapper<Image, ImageModel> mapper;
+//
+//
+//
+//    public List<ImageModel> getAll(String nookId){
+//        List<ImageModel> imageModels=imageRepository.findByNook(nookId).stream()
+//                .map(entity-> {
+//                    try {
+//                        return mapper.toModel(entity);
+//                    } catch (IOException e) {
+//                        throw new RuntimeException(e);
+//                    }
+//                }).collect(Collectors.toList());
+//
+//        return imageModels;
+//
+//    }
+//    public void save(ImageModel imageModel){
+//
 //    }
 
 
-    public byte[] downloadImage(String imageLocation) throws IOException {
-        Optional<Image> image=imageRepository.findById(imageLocation);
-        byte [] images= Files.readAllBytes(new File(imageLocation).toPath());
-
-        return images;
-    }
-}

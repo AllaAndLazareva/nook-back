@@ -41,8 +41,7 @@ class NookBackApplicationTests {
 
     @Autowired
     private AddressRepository addressRepository;
-    @Autowired
-    private NookRepository nookRepository;
+
     @Autowired
     private CostRepository costRepository;
     @Autowired
@@ -61,7 +60,7 @@ class NookBackApplicationTests {
     @Test
     void contextLoads() {
 
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\USER\\Desktop\\chromedriver\\chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\USER\\Desktop\\chromedriver\\chromedriver-win32\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
         WebDriver driver = new ChromeDriver(options);
@@ -244,6 +243,7 @@ class NookBackApplicationTests {
             try {
                 imageURL=new URL(urlOfImage);
                 BufferedImage saveImage = ImageIO.read(imageURL);
+                String pathName="C:\\image\\"+new Date().getTime();
                 String pathNameJPG="C:\\image\\"+new Date().getTime() + ".jpg";
                 String pathNameJPEG="C:\\image\\"+new Date().getTime() + ".jpeg";
                 String pathNamePNG="C:\\image\\"+new Date().getTime() + ".png";
@@ -251,9 +251,12 @@ class NookBackApplicationTests {
 
                 if(j.contains(".jpg")){
                     //download image to the workspace where the project is, save picture as picture.png (can be changed)
+                    //ImageIO.write(saveImage, "jpg", new File(pathName));
                     ImageIO.write(saveImage, "jpg", new File(pathNameJPG));
                     Image image=new Image();
-                    image.setLocation(pathNameJPEG);
+                    image.setLocation(pathName);
+                    image.setType(ImageType.jpg);
+                   // image.setLocation(pathNameJPEG);
                     imageList.add(image);
                     imageRepository.save(image);
 
@@ -262,7 +265,8 @@ class NookBackApplicationTests {
                     //download image to the workspace where the project is, save picture as picture.png (can be changed)
                     ImageIO.write(saveImage, "jpeg", new File(pathNameJPEG));
                     Image image=new Image();
-                    image.setLocation(pathNameJPEG);
+                    image.setLocation(pathName);
+                    image.setType(ImageType.jpeg);
                     imageList.add(image);
                     imageRepository.save(image);
                 }
@@ -270,7 +274,8 @@ class NookBackApplicationTests {
                     //download image to the workspace where the project is, save picture as picture.png (can be changed)
                     ImageIO.write(saveImage, "png", new File(pathNamePNG));
                     Image image=new Image();
-                    image.setLocation(pathNamePNG);
+                    image.setLocation(pathName);
+                    image.setType(ImageType.png);
                     imageList.add(image);
                     imageRepository.save(image);
                 }
@@ -278,7 +283,8 @@ class NookBackApplicationTests {
                     //download image to the workspace where the project is, save picture as picture.png (can be changed)
                     ImageIO.write(saveImage, "gif", new File(pathNameGIF));
                     Image image=new Image();
-                    image.setLocation(pathNameGIF);
+                    image.setLocation(pathName);
+                    image.setType(ImageType.gif);
                     imageList.add(image);
                     imageRepository.save(image);
                 }

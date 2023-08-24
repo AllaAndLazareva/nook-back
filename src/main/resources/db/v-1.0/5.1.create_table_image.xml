@@ -11,6 +11,11 @@
             <column name="location" type="varchar(64)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
+            <column name="type" type="varchar(64)">
+            <constraints foreignKeyName="image_type_type_fk"
+                         referencedTableName="image_type"
+                         referencedColumnNames="type"/>
+            </column>
 
 
 

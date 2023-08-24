@@ -18,15 +18,15 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class NookMapper implements Mapper<Nook, NookModel> {
 
     @Autowired
-    private static ImageMapper imageMapper;
-    @Autowired
-    private static ImageRepository imageRepository;
+    private ImageMapper imageMapper;
+
     @Override
     public Nook toEntity(NookModel nookModel) {
         return null;
@@ -37,14 +37,11 @@ public class NookMapper implements Mapper<Nook, NookModel> {
         NookModel nookModel=new NookModel();
         nookModel.setAddress(nook.getAddress().getValue());
         nookModel.setQuantityRooms(nook.getQuantityRooms().toString());
-        String imageLocation=nook.getImages().get(0).getLocation();
-              byte[] images=null;
-        try {            images= Files.readAllBytes(new File(imageLocation).toPath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        nookModel.setImage(images);
+        nookModel.setImage(imageMapper.toModel(nook.getImages().get(0)));
 
+//                .stream()
+//                .map(image->imageMapper.toModel(image))
+//                .collect(Collectors.toList()));
         nookModel.setTimeOfEditing(nook.getTimeOfEditing());
         nookModel.setType(nook.getType().toString());
         return nookModel;

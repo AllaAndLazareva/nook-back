@@ -1,5 +1,6 @@
 package by.soykin.nook.nookback.provider;
 
+import by.soykin.nook.nookback.model.ImageModel;
 import by.soykin.nook.nookback.model.NookModel;
 
 import java.io.IOException;
@@ -9,5 +10,7 @@ public interface ImageProvider {
 
 
 
-    byte[] downloadImage(String imageLocation) throws IOException;
+   // byte[] downloadImage(String imageLocation) throws IOException;
+
+    List<ImageModel> getAll(String nookId);
 }
